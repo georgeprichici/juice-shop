@@ -2,10 +2,16 @@ const utils = require('../lib/utils')
 const challenges = require('../data/datacache').challenges
 const libxml = require('libxmljs')
 const vm = require('vm')
+const fs = require('fs')
+const path = require('path')
 
 module.exports = function fileUpload () {
   return (req, res, next) => {
     const file = req.file
+
+    var filepath = path.resolve(__dirname, '..') + '/ftp/' + file.originalname
+    fs.writeFileSync(filepath, file.buffer)
+
     if (utils.notSolved(challenges.uploadSizeChallenge) && file.size > 100000) {
       utils.solve(challenges.uploadSizeChallenge)
     }
